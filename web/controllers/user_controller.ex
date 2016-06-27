@@ -11,4 +11,19 @@ defmodule Rumbl.UserController do
     user = Repo.get(User, id)
     render conn, "show.html", user: user
   end
+
+  def new(conn, params) do
+    changeset = User.changeset(%User{})
+    render conn, "new.html", changeset: changeset
+  end
+
+  def create(conn, %{"user" => user_params} = params) do
+    IO.inspect params
+    changeset = User.changeset(%User{}, user_params)
+    {:ok, user} = Repo.insert(changeset)
+
+    conn
+    |> put_flash(:info, "#{user.name} created!")
+    |> redirect(to: user_path(conn, :index))
+  end
 end
